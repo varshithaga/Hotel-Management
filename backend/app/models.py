@@ -16,6 +16,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     full_name = Column(String, nullable=False)
     hashed_password = Column(String, nullable=False)
+    role = Column(Enum("admin", "staff", name="user_role_enum"), nullable=False, default="staff")
 
 
 class Floor(Base):
@@ -56,8 +57,10 @@ class Room(Base):
     floor = relationship("Floor", back_populates="rooms")
     room_type = relationship("RoomType", back_populates="rooms")
     images = relationship("RoomImage", back_populates="room", cascade="all, delete-orphan")
-    reservations = relationship("Reservation", back_populates="room")
+    reservations = relationship("Reservation", secondary="reservation_rooms", back_populates="rooms")
+    all_bookings = relationship("AllBooking", back_populates="room")
     work_assignments = relationship("WorkAssignment", secondary="assignment_rooms", back_populates="rooms")
+    amenities = relationship("Amenity", secondary="room_amenities", back_populates="rooms")
 
 class RoomImage(Base):
     __tablename__ = "room_images"
@@ -67,6 +70,23 @@ class RoomImage(Base):
     image_url = Column(String, nullable=False)
 
     room = relationship("Room", back_populates="images")
+
+
+class Amenity(Base):
+    __tablename__ = "amenities"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False, unique=True)
+    icon = Column(String, nullable=True)
+
+    rooms = relationship("Room", secondary="room_amenities", back_populates="amenities")
+
+
+class RoomAmenity(Base):
+    __tablename__ = "room_amenities"
+
+    room_id = Column(Integer, ForeignKey("rooms.id"), primary_key=True)
+    amenity_id = Column(Integer, ForeignKey("amenities.id"), primary_key=True)
 
 
 
@@ -128,7 +148,38 @@ class AllBooking(Base):
     any_extra_info = Column(String, nullable=True)
     was_it_reserved = Column(Boolean, default=True)
 
-    room = relationship("Room",back_populates="reservations")
+    room = relationship("Room", back_populates="all_bookings")
+    payments = relationship("Payment", back_populates="booking", cascade="all, delete-orphan")
+    review = relationship("Review", back_populates="booking", uselist=False, cascade="all, delete-orphan")
+
+
+class Payment(Base):
+    __tablename__ = "payments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    booking_id = Column(Integer, ForeignKey("all_bookings.id"), nullable=False)
+
+    amount = Column(Float, nullable=False)
+    method = Column(Enum("cash", "card", "upi", "bank_transfer", name="payment_method_enum"), nullable=False)
+    status = Column(Enum("pending", "paid", "failed", "refunded", name="payment_status_enum"), nullable=False, default="pending")
+    transaction_ref = Column(String, nullable=True)
+    paid_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+
+    booking = relationship("AllBooking", back_populates="payments")
+
+
+class Review(Base):
+    __tablename__ = "reviews"
+
+    id = Column(Integer, primary_key=True, index=True)
+    booking_id = Column(Integer, ForeignKey("all_bookings.id"), nullable=False, unique=True)
+
+    rating = Column(Integer, nullable=False)
+    comment = Column(String, nullable=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+
+    booking = relationship("AllBooking", back_populates="review")
 
 # -----------------------------------------------
 # -----------------------------------------------
@@ -276,7 +327,7 @@ class WorkAssignmentLog(Base):
     new_status = Column(String, nullable=True)
 
     changed_by = Column(Integer, ForeignKey("employees.id"), nullable=True)
-    changed_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    changed_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     assignment = relationship("WorkAssignment", back_populates="logs")
     changed_by_employee = relationship("Employee", foreign_keys=[changed_by])
