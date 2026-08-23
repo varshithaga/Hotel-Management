@@ -74,14 +74,16 @@ class Reservation(Base):
     __tablename__ = "reservations"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_name= Column(String, nullable=False)
-    user_email= Column(String, nullable=False)
-    user_phone= Column(String, nullable=False)
-    user_photo= Column(String, nullable=True)
-    user_id_proof= Column(String, nullable=True)
-    room_id = Column(Integer, ForeignKey("rooms.id"), nullable=False)
+
+    user_name = Column(String, nullable=False)
+    user_email = Column(String, nullable=False)
+    user_phone = Column(String, nullable=False)
+    user_photo = Column(String, nullable=True)
+    user_id_proof = Column(String, nullable=True)
+
     reserved_check_in_date = Column(DateTime, nullable=False)
     reserved_check_out_date = Column(DateTime, nullable=False)
+
     total_price = Column(Float, nullable=False)
 
     is_it_canceled = Column(Boolean, default=False)
@@ -89,7 +91,19 @@ class Reservation(Base):
     canceled_at = Column(DateTime, nullable=True)
 
     created_at = Column(DateTime, nullable=False)
-    room = relationship("Room",back_populates="reservations")
+
+    rooms = relationship(
+        "Room",
+        secondary="reservation_rooms",
+        back_populates="reservations"
+    )
+
+
+class ReservationRoom(Base):
+    __tablename__ = "reservation_rooms"
+
+    reservation_id = Column(Integer, ForeignKey("reservations.id"), primary_key=True)
+    room_id = Column(Integer, ForeignKey("rooms.id"), primary_key=True)
 
 
 class AllBooking(Base):
