@@ -2,15 +2,23 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import schemas
+from ..auth import get_current_user
 from ..crud import reservation as reservation_crud
 from ..database import get_db
+from ..pagination import PageParams, PaginatedResponse, paginate_query
 
-router = APIRouter(prefix="/reservations", tags=["Reservations"])
+router = APIRouter(prefix="/reservations", tags=["Reservations"], dependencies=[Depends(get_current_user)])
 
 
-@router.get("/", response_model=list[schemas.ReservationOut])
-def list_reservations(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return reservation_crud.get_reservations(db, skip=skip, limit=limit)
+@router.get("/", response_model=PaginatedResponse[schemas.ReservationOut])
+def list_reservations(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = reservation_crud.query_reservations(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@router.get("/all/", response_model=list[schemas.ReservationOut])
+def list_all_reservations(search: str | None = None, db: Session = Depends(get_db)):
+    return reservation_crud.query_reservations(db, search=search).all()
 
 
 @router.get("/{reservation_id}", response_model=schemas.ReservationOut)

@@ -1,16 +1,26 @@
 # CRUD operations for: Reservation, ReservationRoom
+import datetime
+
 from sqlalchemy.orm import Session
 
 from .. import models, schemas
-import datetime
+from ..db_utils import safe_delete
 
 
 def get_reservation(db: Session, reservation_id: int):
     return db.query(models.Reservation).filter(models.Reservation.id == reservation_id).first()
 
 
-def get_reservations(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Reservation).offset(skip).limit(limit).all()
+def query_reservations(db: Session, search: str | None = None):
+    query = db.query(models.Reservation)
+    if search:
+        like = f"%{search}%"
+        query = query.filter(
+            (models.Reservation.user_name.ilike(like))
+            | (models.Reservation.user_email.ilike(like))
+            | (models.Reservation.user_phone.ilike(like))
+        )
+    return query.order_by(models.Reservation.id.desc())
 
 
 def create_reservation(db: Session, reservation_in: schemas.ReservationCreate):
@@ -44,8 +54,7 @@ def delete_reservation(db: Session, reservation_id: int):
     db_obj = get_reservation(db, reservation_id)
     if not db_obj:
         return None
-    db.delete(db_obj)
-    db.commit()
+    safe_delete(db, db_obj)
     return db_obj
 
 

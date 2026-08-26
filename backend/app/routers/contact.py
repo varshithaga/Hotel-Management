@@ -2,18 +2,26 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import schemas
+from ..auth import get_current_user
 from ..crud import contact as contact_crud
 from ..database import get_db
+from ..pagination import PageParams, PaginatedResponse, paginate_query
 
-contact_router = APIRouter(prefix="/contacts", tags=["Contact Forms"])
-feedback_router = APIRouter(prefix="/feedbacks", tags=["Feedbacks"])
+contact_router = APIRouter(prefix="/contacts", tags=["Contact Forms"], dependencies=[Depends(get_current_user)])
+feedback_router = APIRouter(prefix="/feedbacks", tags=["Feedbacks"], dependencies=[Depends(get_current_user)])
 
 
 # --- ContactForm ---
 
-@contact_router.get("/", response_model=list[schemas.ContactFormOut])
-def list_contacts(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return contact_crud.get_contacts(db, skip=skip, limit=limit)
+@contact_router.get("/", response_model=PaginatedResponse[schemas.ContactFormOut])
+def list_contacts(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = contact_crud.query_contacts(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@contact_router.get("/all/", response_model=list[schemas.ContactFormOut])
+def list_all_contacts(search: str | None = None, db: Session = Depends(get_db)):
+    return contact_crud.query_contacts(db, search=search).all()
 
 
 @contact_router.get("/{contact_id}", response_model=schemas.ContactFormOut)
@@ -46,9 +54,15 @@ def delete_contact(contact_id: int, db: Session = Depends(get_db)):
 
 # --- Feedback ---
 
-@feedback_router.get("/", response_model=list[schemas.FeedbackOut])
-def list_feedbacks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return contact_crud.get_feedbacks(db, skip=skip, limit=limit)
+@feedback_router.get("/", response_model=PaginatedResponse[schemas.FeedbackOut])
+def list_feedbacks(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = contact_crud.query_feedbacks(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@feedback_router.get("/all/", response_model=list[schemas.FeedbackOut])
+def list_all_feedbacks(search: str | None = None, db: Session = Depends(get_db)):
+    return contact_crud.query_feedbacks(db, search=search).all()
 
 
 @feedback_router.get("/{feedback_id}", response_model=schemas.FeedbackOut)

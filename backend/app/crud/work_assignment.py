@@ -2,6 +2,7 @@
 from sqlalchemy.orm import Session
 
 from .. import models, schemas
+from ..db_utils import safe_delete
 
 
 # --- WorkType ---
@@ -10,8 +11,11 @@ def get_work_type(db: Session, work_type_id: int):
     return db.query(models.WorkType).filter(models.WorkType.id == work_type_id).first()
 
 
-def get_work_types(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.WorkType).offset(skip).limit(limit).all()
+def query_work_types(db: Session, search: str | None = None):
+    query = db.query(models.WorkType)
+    if search:
+        query = query.filter(models.WorkType.name.ilike(f"%{search}%"))
+    return query.order_by(models.WorkType.id.desc())
 
 
 def create_work_type(db: Session, work_type_in: schemas.WorkTypeCreate):
@@ -37,8 +41,7 @@ def delete_work_type(db: Session, work_type_id: int):
     db_obj = get_work_type(db, work_type_id)
     if not db_obj:
         return None
-    db.delete(db_obj)
-    db.commit()
+    safe_delete(db, db_obj)
     return db_obj
 
 
@@ -48,8 +51,11 @@ def get_work_assignment(db: Session, assignment_id: int):
     return db.query(models.WorkAssignment).filter(models.WorkAssignment.id == assignment_id).first()
 
 
-def get_work_assignments(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.WorkAssignment).offset(skip).limit(limit).all()
+def query_work_assignments(db: Session, search: str | None = None):
+    query = db.query(models.WorkAssignment)
+    if search:
+        query = query.filter(models.WorkAssignment.status.ilike(f"%{search}%"))
+    return query.order_by(models.WorkAssignment.id.desc())
 
 
 def create_work_assignment(db: Session, assignment_in: schemas.WorkAssignmentCreate):
@@ -91,8 +97,7 @@ def delete_work_assignment(db: Session, assignment_id: int):
     db_obj = get_work_assignment(db, assignment_id)
     if not db_obj:
         return None
-    db.delete(db_obj)
-    db.commit()
+    safe_delete(db, db_obj)
     return db_obj
 
 
@@ -150,11 +155,13 @@ def get_work_assignment_log(db: Session, log_id: int):
     return db.query(models.WorkAssignmentLog).filter(models.WorkAssignmentLog.id == log_id).first()
 
 
-def get_work_assignment_logs(db: Session, assignment_id: int | None = None, skip: int = 0, limit: int = 100):
+def query_work_assignment_logs(db: Session, assignment_id: int | None = None, search: str | None = None):
     query = db.query(models.WorkAssignmentLog)
     if assignment_id is not None:
         query = query.filter(models.WorkAssignmentLog.assignment_id == assignment_id)
-    return query.offset(skip).limit(limit).all()
+    if search:
+        query = query.filter(models.WorkAssignmentLog.action.ilike(f"%{search}%"))
+    return query.order_by(models.WorkAssignmentLog.id.desc())
 
 
 def create_work_assignment_log(db: Session, log_in: schemas.WorkAssignmentLogCreate):
@@ -180,6 +187,5 @@ def delete_work_assignment_log(db: Session, log_id: int):
     db_obj = get_work_assignment_log(db, log_id)
     if not db_obj:
         return None
-    db.delete(db_obj)
-    db.commit()
+    safe_delete(db, db_obj)
     return db_obj

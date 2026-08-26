@@ -13,6 +13,20 @@ interface RefreshTokenResponse {
   access: string;
 }
 
+interface CurrentUser {
+  id: number;
+  username: string;
+  email: string;
+  full_name: string;
+  role: string;
+}
+
+interface LoginResponse {
+  access: string;
+  refresh: string;
+  user: CurrentUser;
+}
+
 interface AuthHeaders {
   'Content-Type': string;
   'Authorization': string;
@@ -121,5 +135,47 @@ const refreshAccessToken = async (refresh_token: string | null): Promise<string>
   return accessToken;
 };
 
-export { createApiUrl, getAuthHeaders, getAuthHeadersFile };
-export type { AuthHeaders, FileUploadHeaders, JwtPayload, RefreshTokenResponse };
+const login = async (username: string, password: string): Promise<CurrentUser> => {
+  const response = await fetch(createApiUrl('api/token/'), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.detail || data.message || 'Invalid username or password');
+  }
+
+  const loginData = data as LoginResponse;
+  localStorage.setItem('access', loginData.access);
+  localStorage.setItem('refresh', loginData.refresh);
+  localStorage.setItem('user', JSON.stringify(loginData.user));
+  return loginData.user;
+};
+
+const logout = (): void => {
+  localStorage.removeItem('access');
+  localStorage.removeItem('refresh');
+  localStorage.removeItem('user');
+};
+
+const isLoggedIn = (): boolean => {
+  return !!localStorage.getItem('refresh');
+};
+
+const getCurrentUser = (): CurrentUser | null => {
+  const raw = localStorage.getItem('user');
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as CurrentUser;
+  } catch {
+    return null;
+  }
+};
+
+export { createApiUrl, getAuthHeaders, getAuthHeadersFile, login, logout, isLoggedIn, getCurrentUser };
+export type { AuthHeaders, FileUploadHeaders, JwtPayload, RefreshTokenResponse, CurrentUser, LoginResponse };

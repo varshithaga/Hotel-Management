@@ -2,15 +2,23 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import schemas
+from ..auth import get_current_user
 from ..crud import user as user_crud
 from ..database import get_db
+from ..pagination import PageParams, PaginatedResponse, paginate_query
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(prefix="/users", tags=["Users"], dependencies=[Depends(get_current_user)])
 
 
-@router.get("/", response_model=list[schemas.UserOut])
-def list_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return user_crud.get_users(db, skip=skip, limit=limit)
+@router.get("/", response_model=PaginatedResponse[schemas.UserOut])
+def list_users(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = user_crud.query_users(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@router.get("/all/", response_model=list[schemas.UserOut])
+def list_all_users(search: str | None = None, db: Session = Depends(get_db)):
+    return user_crud.query_users(db, search=search).all()
 
 
 @router.get("/{user_id}", response_model=schemas.UserOut)

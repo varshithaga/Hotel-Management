@@ -2,15 +2,23 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import schemas
+from ..auth import get_current_user
 from ..crud import floor as floor_crud
 from ..database import get_db
+from ..pagination import PageParams, PaginatedResponse, paginate_query
 
-router = APIRouter(prefix="/floors", tags=["Floors"])
+router = APIRouter(prefix="/floors", tags=["Floors"], dependencies=[Depends(get_current_user)])
 
 
-@router.get("/", response_model=list[schemas.FloorOut])
-def list_floors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return floor_crud.get_floors(db, skip=skip, limit=limit)
+@router.get("/", response_model=PaginatedResponse[schemas.FloorOut])
+def list_floors(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = floor_crud.query_floors(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@router.get("/all/", response_model=list[schemas.FloorOut])
+def list_all_floors(search: str | None = None, db: Session = Depends(get_db)):
+    return floor_crud.query_floors(db, search=search).all()
 
 
 @router.get("/{floor_id}", response_model=schemas.FloorOut)

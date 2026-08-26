@@ -2,19 +2,27 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import schemas
+from ..auth import get_current_user
 from ..crud import work_assignment as work_assignment_crud
 from ..database import get_db
+from ..pagination import PageParams, PaginatedResponse, paginate_query
 
-work_type_router = APIRouter(prefix="/work-types", tags=["Work Types"])
-work_assignment_router = APIRouter(prefix="/work-assignments", tags=["Work Assignments"])
-work_assignment_log_router = APIRouter(prefix="/work-assignment-logs", tags=["Work Assignment Logs"])
+work_type_router = APIRouter(prefix="/work-types", tags=["Work Types"], dependencies=[Depends(get_current_user)])
+work_assignment_router = APIRouter(prefix="/work-assignments", tags=["Work Assignments"], dependencies=[Depends(get_current_user)])
+work_assignment_log_router = APIRouter(prefix="/work-assignment-logs", tags=["Work Assignment Logs"], dependencies=[Depends(get_current_user)])
 
 
 # --- WorkType ---
 
-@work_type_router.get("/", response_model=list[schemas.WorkTypeOut])
-def list_work_types(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return work_assignment_crud.get_work_types(db, skip=skip, limit=limit)
+@work_type_router.get("/", response_model=PaginatedResponse[schemas.WorkTypeOut])
+def list_work_types(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = work_assignment_crud.query_work_types(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@work_type_router.get("/all/", response_model=list[schemas.WorkTypeOut])
+def list_all_work_types(search: str | None = None, db: Session = Depends(get_db)):
+    return work_assignment_crud.query_work_types(db, search=search).all()
 
 
 @work_type_router.get("/{work_type_id}", response_model=schemas.WorkTypeOut)
@@ -47,9 +55,15 @@ def delete_work_type(work_type_id: int, db: Session = Depends(get_db)):
 
 # --- WorkAssignment ---
 
-@work_assignment_router.get("/", response_model=list[schemas.WorkAssignmentOut])
-def list_work_assignments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return work_assignment_crud.get_work_assignments(db, skip=skip, limit=limit)
+@work_assignment_router.get("/", response_model=PaginatedResponse[schemas.WorkAssignmentOut])
+def list_work_assignments(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = work_assignment_crud.query_work_assignments(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@work_assignment_router.get("/all/", response_model=list[schemas.WorkAssignmentOut])
+def list_all_work_assignments(search: str | None = None, db: Session = Depends(get_db)):
+    return work_assignment_crud.query_work_assignments(db, search=search).all()
 
 
 @work_assignment_router.get("/{assignment_id}", response_model=schemas.WorkAssignmentOut)
@@ -114,9 +128,15 @@ def remove_room_from_assignment(assignment_id: int, room_id: int, db: Session = 
 
 # --- WorkAssignmentLog ---
 
-@work_assignment_log_router.get("/", response_model=list[schemas.WorkAssignmentLogOut])
-def list_work_assignment_logs(assignment_id: int | None = None, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return work_assignment_crud.get_work_assignment_logs(db, assignment_id=assignment_id, skip=skip, limit=limit)
+@work_assignment_log_router.get("/", response_model=PaginatedResponse[schemas.WorkAssignmentLogOut])
+def list_work_assignment_logs(assignment_id: int | None = None, params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = work_assignment_crud.query_work_assignment_logs(db, assignment_id=assignment_id, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@work_assignment_log_router.get("/all/", response_model=list[schemas.WorkAssignmentLogOut])
+def list_all_work_assignment_logs(assignment_id: int | None = None, search: str | None = None, db: Session = Depends(get_db)):
+    return work_assignment_crud.query_work_assignment_logs(db, assignment_id=assignment_id, search=search).all()
 
 
 @work_assignment_log_router.get("/{log_id}", response_model=schemas.WorkAssignmentLogOut)

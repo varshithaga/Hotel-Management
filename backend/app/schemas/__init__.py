@@ -1,4 +1,5 @@
 from .user import UserBase, UserCreate, UserUpdate, UserOut
+from .auth import TokenObtainRequest, TokenPair, TokenRefreshRequest, TokenRefreshResponse
 from .floor import FloorBase, FloorCreate, FloorUpdate, FloorOut
 from .room import (
     RoomTypeBase, RoomTypeCreate, RoomTypeUpdate, RoomTypeOut,

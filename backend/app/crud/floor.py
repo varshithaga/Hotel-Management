@@ -2,14 +2,18 @@
 from sqlalchemy.orm import Session
 
 from .. import models, schemas
+from ..db_utils import safe_delete
 
 
 def get_floor(db: Session, floor_id: int):
     return db.query(models.Floor).filter(models.Floor.id == floor_id).first()
 
 
-def get_floors(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Floor).offset(skip).limit(limit).all()
+def query_floors(db: Session, search: str | None = None):
+    query = db.query(models.Floor)
+    if search:
+        query = query.filter(models.Floor.name.ilike(f"%{search}%"))
+    return query.order_by(models.Floor.id.desc())
 
 
 def create_floor(db: Session, floor_in: schemas.FloorCreate):
@@ -35,6 +39,5 @@ def delete_floor(db: Session, floor_id: int):
     db_floor = get_floor(db, floor_id)
     if not db_floor:
         return None
-    db.delete(db_floor)
-    db.commit()
+    safe_delete(db, db_floor)
     return db_floor

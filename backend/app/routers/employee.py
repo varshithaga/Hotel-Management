@@ -2,19 +2,27 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import schemas
+from ..auth import get_current_user
 from ..crud import employee as employee_crud
 from ..database import get_db
+from ..pagination import PageParams, PaginatedResponse, paginate_query
 
-department_router = APIRouter(prefix="/departments", tags=["Departments"])
-staff_role_router = APIRouter(prefix="/staff-roles", tags=["Staff Roles"])
-employee_router = APIRouter(prefix="/employees", tags=["Employees"])
+department_router = APIRouter(prefix="/departments", tags=["Departments"], dependencies=[Depends(get_current_user)])
+staff_role_router = APIRouter(prefix="/staff-roles", tags=["Staff Roles"], dependencies=[Depends(get_current_user)])
+employee_router = APIRouter(prefix="/employees", tags=["Employees"], dependencies=[Depends(get_current_user)])
 
 
 # --- Department ---
 
-@department_router.get("/", response_model=list[schemas.DepartmentOut])
-def list_departments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return employee_crud.get_departments(db, skip=skip, limit=limit)
+@department_router.get("/", response_model=PaginatedResponse[schemas.DepartmentOut])
+def list_departments(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = employee_crud.query_departments(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@department_router.get("/all/", response_model=list[schemas.DepartmentOut])
+def list_all_departments(search: str | None = None, db: Session = Depends(get_db)):
+    return employee_crud.query_departments(db, search=search).all()
 
 
 @department_router.get("/{department_id}", response_model=schemas.DepartmentOut)
@@ -47,9 +55,15 @@ def delete_department(department_id: int, db: Session = Depends(get_db)):
 
 # --- StaffRole ---
 
-@staff_role_router.get("/", response_model=list[schemas.StaffRoleOut])
-def list_staff_roles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return employee_crud.get_staff_roles(db, skip=skip, limit=limit)
+@staff_role_router.get("/", response_model=PaginatedResponse[schemas.StaffRoleOut])
+def list_staff_roles(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = employee_crud.query_staff_roles(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@staff_role_router.get("/all/", response_model=list[schemas.StaffRoleOut])
+def list_all_staff_roles(search: str | None = None, db: Session = Depends(get_db)):
+    return employee_crud.query_staff_roles(db, search=search).all()
 
 
 @staff_role_router.get("/{staff_role_id}", response_model=schemas.StaffRoleOut)
@@ -82,9 +96,15 @@ def delete_staff_role(staff_role_id: int, db: Session = Depends(get_db)):
 
 # --- Employee ---
 
-@employee_router.get("/", response_model=list[schemas.EmployeeOut])
-def list_employees(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return employee_crud.get_employees(db, skip=skip, limit=limit)
+@employee_router.get("/", response_model=PaginatedResponse[schemas.EmployeeOut])
+def list_employees(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = employee_crud.query_employees(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@employee_router.get("/all/", response_model=list[schemas.EmployeeOut])
+def list_all_employees(search: str | None = None, db: Session = Depends(get_db)):
+    return employee_crud.query_employees(db, search=search).all()
 
 
 @employee_router.get("/{employee_id}", response_model=schemas.EmployeeOut)

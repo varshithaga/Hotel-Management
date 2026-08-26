@@ -2,6 +2,7 @@
 from sqlalchemy.orm import Session
 
 from .. import models, schemas
+from ..db_utils import safe_delete
 
 
 # --- RoomType ---
@@ -10,8 +11,11 @@ def get_room_type(db: Session, room_type_id: int):
     return db.query(models.RoomType).filter(models.RoomType.id == room_type_id).first()
 
 
-def get_room_types(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.RoomType).offset(skip).limit(limit).all()
+def query_room_types(db: Session, search: str | None = None):
+    query = db.query(models.RoomType)
+    if search:
+        query = query.filter(models.RoomType.name.ilike(f"%{search}%"))
+    return query.order_by(models.RoomType.id.desc())
 
 
 def create_room_type(db: Session, room_type_in: schemas.RoomTypeCreate):
@@ -37,8 +41,7 @@ def delete_room_type(db: Session, room_type_id: int):
     db_obj = get_room_type(db, room_type_id)
     if not db_obj:
         return None
-    db.delete(db_obj)
-    db.commit()
+    safe_delete(db, db_obj)
     return db_obj
 
 
@@ -48,8 +51,11 @@ def get_amenity(db: Session, amenity_id: int):
     return db.query(models.Amenity).filter(models.Amenity.id == amenity_id).first()
 
 
-def get_amenities(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Amenity).offset(skip).limit(limit).all()
+def query_amenities(db: Session, search: str | None = None):
+    query = db.query(models.Amenity)
+    if search:
+        query = query.filter(models.Amenity.name.ilike(f"%{search}%"))
+    return query.order_by(models.Amenity.id.desc())
 
 
 def create_amenity(db: Session, amenity_in: schemas.AmenityCreate):
@@ -75,8 +81,7 @@ def delete_amenity(db: Session, amenity_id: int):
     db_obj = get_amenity(db, amenity_id)
     if not db_obj:
         return None
-    db.delete(db_obj)
-    db.commit()
+    safe_delete(db, db_obj)
     return db_obj
 
 
@@ -86,11 +91,11 @@ def get_room_image(db: Session, room_image_id: int):
     return db.query(models.RoomImage).filter(models.RoomImage.id == room_image_id).first()
 
 
-def get_room_images(db: Session, room_id: int | None = None, skip: int = 0, limit: int = 100):
+def query_room_images(db: Session, room_id: int | None = None):
     query = db.query(models.RoomImage)
     if room_id is not None:
         query = query.filter(models.RoomImage.room_id == room_id)
-    return query.offset(skip).limit(limit).all()
+    return query.order_by(models.RoomImage.id.desc())
 
 
 def create_room_image(db: Session, room_image_in: schemas.RoomImageCreate):
@@ -116,8 +121,7 @@ def delete_room_image(db: Session, room_image_id: int):
     db_obj = get_room_image(db, room_image_id)
     if not db_obj:
         return None
-    db.delete(db_obj)
-    db.commit()
+    safe_delete(db, db_obj)
     return db_obj
 
 
@@ -127,8 +131,11 @@ def get_room(db: Session, room_id: int):
     return db.query(models.Room).filter(models.Room.id == room_id).first()
 
 
-def get_rooms(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Room).offset(skip).limit(limit).all()
+def query_rooms(db: Session, search: str | None = None):
+    query = db.query(models.Room)
+    if search:
+        query = query.filter(models.Room.name.ilike(f"%{search}%"))
+    return query.order_by(models.Room.id.desc())
 
 
 def create_room(db: Session, room_in: schemas.RoomCreate):
@@ -154,8 +161,7 @@ def delete_room(db: Session, room_id: int):
     db_obj = get_room(db, room_id)
     if not db_obj:
         return None
-    db.delete(db_obj)
-    db.commit()
+    safe_delete(db, db_obj)
     return db_obj
 
 

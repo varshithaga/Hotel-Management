@@ -2,19 +2,27 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import schemas
+from ..auth import get_current_user
 from ..crud import booking as booking_crud
 from ..database import get_db
+from ..pagination import PageParams, PaginatedResponse, paginate_query
 
-booking_router = APIRouter(prefix="/bookings", tags=["Bookings"])
-payment_router = APIRouter(prefix="/payments", tags=["Payments"])
-review_router = APIRouter(prefix="/reviews", tags=["Reviews"])
+booking_router = APIRouter(prefix="/bookings", tags=["Bookings"], dependencies=[Depends(get_current_user)])
+payment_router = APIRouter(prefix="/payments", tags=["Payments"], dependencies=[Depends(get_current_user)])
+review_router = APIRouter(prefix="/reviews", tags=["Reviews"], dependencies=[Depends(get_current_user)])
 
 
 # --- AllBooking ---
 
-@booking_router.get("/", response_model=list[schemas.AllBookingOut])
-def list_bookings(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return booking_crud.get_bookings(db, skip=skip, limit=limit)
+@booking_router.get("/", response_model=PaginatedResponse[schemas.AllBookingOut])
+def list_bookings(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = booking_crud.query_bookings(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@booking_router.get("/all/", response_model=list[schemas.AllBookingOut])
+def list_all_bookings(search: str | None = None, db: Session = Depends(get_db)):
+    return booking_crud.query_bookings(db, search=search).all()
 
 
 @booking_router.get("/{booking_id}", response_model=schemas.AllBookingOut)
@@ -47,9 +55,15 @@ def delete_booking(booking_id: int, db: Session = Depends(get_db)):
 
 # --- Payment ---
 
-@payment_router.get("/", response_model=list[schemas.PaymentOut])
-def list_payments(booking_id: int | None = None, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return booking_crud.get_payments(db, booking_id=booking_id, skip=skip, limit=limit)
+@payment_router.get("/", response_model=PaginatedResponse[schemas.PaymentOut])
+def list_payments(booking_id: int | None = None, params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = booking_crud.query_payments(db, booking_id=booking_id, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@payment_router.get("/all/", response_model=list[schemas.PaymentOut])
+def list_all_payments(booking_id: int | None = None, search: str | None = None, db: Session = Depends(get_db)):
+    return booking_crud.query_payments(db, booking_id=booking_id, search=search).all()
 
 
 @payment_router.get("/{payment_id}", response_model=schemas.PaymentOut)
@@ -82,9 +96,15 @@ def delete_payment(payment_id: int, db: Session = Depends(get_db)):
 
 # --- Review ---
 
-@review_router.get("/", response_model=list[schemas.ReviewOut])
-def list_reviews(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return booking_crud.get_reviews(db, skip=skip, limit=limit)
+@review_router.get("/", response_model=PaginatedResponse[schemas.ReviewOut])
+def list_reviews(params: PageParams = Depends(), db: Session = Depends(get_db)):
+    query = booking_crud.query_reviews(db, search=params.search)
+    return paginate_query(query, params.page, params.limit)
+
+
+@review_router.get("/all/", response_model=list[schemas.ReviewOut])
+def list_all_reviews(search: str | None = None, db: Session = Depends(get_db)):
+    return booking_crud.query_reviews(db, search=search).all()
 
 
 @review_router.get("/{review_id}", response_model=schemas.ReviewOut)
