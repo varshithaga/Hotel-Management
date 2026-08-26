@@ -2,7 +2,7 @@
 import datetime
 
 from sqlalchemy import Column, Integer, String, Float,Boolean,Date, DateTime,ForeignKey,Enum
-from database import Base
+from .database import Base
 from sqlalchemy.orm import relationship
 
 
