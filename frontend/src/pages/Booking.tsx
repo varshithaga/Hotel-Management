@@ -135,7 +135,7 @@ export default function Booking() {
                 </div>
               )}
 
-              <h3 style={{ color: '#10202f', fontSize: '1.6rem', marginBottom: 8 }}>Reservation Details</h3>
+              <h3 style={{ color: '#082F49', fontSize: '1.6rem', marginBottom: 8 }}>Reservation Details</h3>
               <p style={{ color: '#6b6b6b', marginBottom: 30, fontSize: '0.92rem' }}>
                 Pick your dates and we'll check live room availability for you.
               </p>

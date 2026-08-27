@@ -3,22 +3,29 @@
    ============================================ */
 
 :root {
-  --color-navy: #10202f;
-  --color-navy-light: #1a3348;
+  /* Brand palette: Teal -> Navy, on white */
+  --color-teal: #0E7490;
+  --color-teal-light: #22a3bf;
+  --color-navy: #082F49;
+  --color-navy-light: #0E7490;
   --color-gold: #c9a24b;
   --color-gold-light: #e3c77e;
-  --color-cream: #faf7f1;
-  --color-cream-dark: #f0ead9;
-  --color-text: #2c2c2c;
-  --color-text-light: #6b6b6b;
+  --color-cream: #f4f8fa;
+  --color-cream-dark: #e2edf1;
+  --color-text: #1f2d38;
+  --color-text-light: #5b6b76;
   --color-white: #ffffff;
+
+  /* The one gradient used across every menu, banner and dark surface */
+  --gradient-primary: linear-gradient(135deg, #0E7490 0%, #082F49 100%);
+  --gradient-primary-soft: linear-gradient(135deg, rgba(14, 116, 144, 0.93) 0%, rgba(8, 47, 73, 0.96) 100%);
 
   --font-heading: 'Playfair Display', Georgia, serif;
   --font-body: 'Poppins', Arial, sans-serif;
 
-  --shadow-sm: 0 2px 10px rgba(16, 32, 47, 0.08);
-  --shadow-md: 0 10px 30px rgba(16, 32, 47, 0.12);
-  --shadow-lg: 0 20px 50px rgba(16, 32, 47, 0.2);
+  --shadow-sm: 0 2px 10px rgba(8, 47, 73, 0.08);
+  --shadow-md: 0 10px 30px rgba(8, 47, 73, 0.14);
+  --shadow-lg: 0 20px 50px rgba(8, 47, 73, 0.24);
 
   --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -55,7 +62,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 
 .eyebrow {
   display: inline-block;
-  color: var(--color-gold);
+  color: var(--color-teal);
   letter-spacing: 3px;
   text-transform: uppercase;
   font-size: 0.8rem;
@@ -88,11 +95,13 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 }
 
 .btn-primary {
-  background: var(--color-gold);
-  color: var(--color-navy);
+  background: var(--gradient-primary);
+  color: var(--color-white);
+  background-size: 150% 150%;
+  background-position: 0% 50%;
 }
 .btn-primary:hover {
-  background: var(--color-gold-light);
+  background-position: 100% 50%;
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
 }
@@ -109,11 +118,11 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 }
 
 .btn-dark {
-  background: var(--color-navy);
+  background: var(--gradient-primary);
   color: var(--color-white);
 }
 .btn-dark:hover {
-  background: var(--color-gold);
+  background: var(--color-white);
   color: var(--color-navy);
   transform: translateY(-3px);
 }
@@ -132,7 +141,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 }
 
 .navbar.scrolled {
-  background: rgba(16, 32, 47, 0.96);
+  background: var(--gradient-primary);
   padding: 14px 0;
   box-shadow: var(--shadow-md);
   backdrop-filter: blur(6px);
@@ -151,7 +160,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   font-weight: 700;
   letter-spacing: 1px;
 }
-.logo span { color: var(--color-gold); }
+.logo span { color: rgba(255, 255, 255, 0.6); }
 
 .nav-links {
   display: flex;
@@ -175,17 +184,17 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   bottom: 0;
   width: 0;
   height: 2px;
-  background: var(--color-gold);
+  background: var(--color-white);
   transition: var(--transition);
 }
 
 .nav-links a:hover::after,
 .nav-links a.active::after { width: 100%; }
 
-.nav-links a.active { color: var(--color-gold); }
+.nav-links a.active { color: var(--color-white); }
 
 .nav-cta {
-  background: var(--color-gold);
+  background: var(--color-white);
   color: var(--color-navy) !important;
   padding: 11px 26px;
   border-radius: 2px;
@@ -193,7 +202,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   text-transform: uppercase;
   font-size: 0.82rem !important;
 }
-.nav-cta:hover { background: var(--color-gold-light); }
+.nav-cta:hover { background: rgba(255, 255, 255, 0.85); }
 .nav-cta::after { display: none; }
 
 .nav-toggle {
@@ -217,7 +226,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(rgba(16,32,47,0.55), rgba(16,32,47,0.75)),
+  background: var(--gradient-primary-soft),
     url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
 }
 
@@ -228,26 +237,26 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: linear-gradient(rgba(16,32,47,0.65), rgba(16,32,47,0.75)),
+  background: var(--gradient-primary-soft),
     url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
 }
 
 .page-hero .container { color: var(--color-white); }
-.page-hero .eyebrow { color: var(--color-gold-light); }
+.page-hero .eyebrow { color: var(--color-white); }
 .page-hero h1 { font-size: 3rem; color: var(--color-white); }
-.page-hero .breadcrumb { margin-top: 14px; color: rgba(255,255,255,0.75); font-size: 0.9rem; }
-.page-hero .breadcrumb a { color: var(--color-gold-light); }
+.page-hero .breadcrumb { margin-top: 14px; color: rgba(255,255,255,0.8); font-size: 0.9rem; }
+.page-hero .breadcrumb a { color: var(--color-white); }
 
 .hero-content { max-width: 720px; color: var(--color-white); }
 
-.hero-content .eyebrow { color: var(--color-gold-light); }
+.hero-content .eyebrow { color: var(--color-white); }
 
 .hero-content h1 {
   font-size: 4rem;
   color: var(--color-white);
   margin-bottom: 22px;
 }
-.hero-content h1 em { color: var(--color-gold); font-style: normal; }
+.hero-content h1 em { color: var(--color-white); font-style: italic; }
 
 .hero-content p {
   font-size: 1.1rem;
@@ -322,7 +331,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 .booking-field input:focus,
 .booking-field select:focus {
   outline: none;
-  border-color: var(--color-gold);
+  border-color: var(--color-teal);
 }
 
 /* ============ About / Intro ============ */
@@ -353,17 +362,17 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   position: absolute;
   bottom: -24px;
   right: -24px;
-  background: var(--color-navy);
+  background: var(--gradient-primary);
   color: var(--color-white);
   padding: 26px 30px;
   text-align: center;
   border-radius: 4px;
   box-shadow: var(--shadow-lg);
 }
-.about-badge strong { font-family: var(--font-heading); font-size: 2.2rem; color: var(--color-gold); display: block; }
+.about-badge strong { font-family: var(--font-heading); font-size: 2.2rem; color: var(--color-white); display: block; }
 .about-badge span { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; }
 
-.about-text .eyebrow { color: var(--color-gold); }
+.about-text .eyebrow { color: var(--color-teal); }
 .about-text h2 { font-size: 2.5rem; color: var(--color-navy); margin: 14px 0 20px; }
 .about-text p { color: var(--color-text-light); margin-bottom: 26px; }
 
@@ -371,17 +380,18 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 .about-list li { display: flex; align-items: center; gap: 12px; font-weight: 500; }
 .about-list li .check {
   width: 22px; height: 22px;
-  background: var(--color-gold);
-  color: var(--color-navy);
+  background: var(--gradient-primary);
+  color: var(--color-white);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 0.7rem; flex-shrink: 0;
 }
 
 /* ============ Amenities ============ */
-.amenities { background: var(--color-navy); color: var(--color-white); }
+.amenities { background: var(--gradient-primary); color: var(--color-white); }
 .amenities .section-header h2 { color: var(--color-white); }
 .amenities .section-header p { color: rgba(255,255,255,0.65); }
+.amenities .eyebrow { color: var(--color-white); }
 
 .amenity-grid {
   display: grid;
@@ -397,14 +407,14 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   transition: var(--transition);
 }
 .amenity-card:hover {
-  background: var(--color-gold);
-  border-color: var(--color-gold);
+  background: var(--color-white);
+  border-color: var(--color-white);
   transform: translateY(-8px);
 }
 .amenity-card:hover .amenity-icon,
 .amenity-card:hover h4,
 .amenity-card:hover p { color: var(--color-navy); }
-.amenity-icon { font-size: 2.1rem; color: var(--color-gold); margin-bottom: 20px; }
+.amenity-icon { font-size: 2.1rem; color: var(--color-white); margin-bottom: 20px; }
 .amenity-card h4 { font-size: 1.1rem; margin-bottom: 10px; }
 .amenity-card p { font-size: 0.88rem; color: rgba(255,255,255,0.6); }
 
@@ -429,8 +439,8 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 .room-price {
   position: absolute;
   bottom: 14px; right: 14px;
-  background: var(--color-gold);
-  color: var(--color-navy);
+  background: var(--gradient-primary);
+  color: var(--color-white);
   padding: 8px 16px;
   border-radius: 2px;
   font-weight: 700;
@@ -455,7 +465,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   align-items: center;
   gap: 6px;
 }
-.room-meta i { color: var(--color-gold); }
+.room-meta i { color: var(--color-teal); }
 
 .room-footer { display: flex; justify-content: space-between; align-items: center; }
 .room-link {
@@ -464,7 +474,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 2px solid var(--color-gold);
+  border-bottom: 2px solid var(--color-teal);
   padding-bottom: 3px;
 }
 
@@ -487,7 +497,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   margin: 0 auto;
   box-shadow: var(--shadow-sm);
 }
-.testimonial-stars { color: var(--color-gold); margin-bottom: 20px; font-size: 1rem; }
+.testimonial-stars { color: var(--color-teal); margin-bottom: 20px; font-size: 1rem; }
 .testimonial-card p.quote {
   font-family: var(--font-heading);
   font-size: 1.3rem;
@@ -504,11 +514,11 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 .testimonial-dots { display: flex; justify-content: center; gap: 10px; margin-top: 34px; }
 .testimonial-dots .dot {
   width: 10px; height: 10px; border-radius: 50%;
-  background: var(--color-gold-light);
+  background: var(--color-teal-light);
   cursor: pointer;
   transition: var(--transition);
 }
-.testimonial-dots .dot.active { background: var(--color-gold); transform: scale(1.3); }
+.testimonial-dots .dot.active { background: var(--color-teal); transform: scale(1.3); }
 
 /* ============ Gallery ============ */
 .gallery-grid {
@@ -524,7 +534,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 .gallery-item.tall { grid-row: span 2; }
 .gallery-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(0deg, rgba(16,32,47,0.75), transparent 60%);
+  background: linear-gradient(0deg, rgba(8,47,73,0.8), transparent 60%);
   display: flex; align-items: flex-end; padding: 18px;
   opacity: 0; transition: var(--transition);
 }
@@ -533,7 +543,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 
 /* ============ CTA Band ============ */
 .cta-band {
-  background: linear-gradient(rgba(16,32,47,0.85), rgba(16,32,47,0.85)),
+  background: var(--gradient-primary-soft),
     url('https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1600&q=80') center/cover;
   text-align: center;
   color: var(--color-white);
@@ -543,7 +553,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 
 /* ============ Stats ============ */
 .stats-bar {
-  background: var(--color-navy);
+  background: var(--gradient-primary);
   padding: 60px 0;
 }
 .stats-grid {
@@ -556,7 +566,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 .stats-grid strong {
   font-family: var(--font-heading);
   font-size: 2.6rem;
-  color: var(--color-gold);
+  color: var(--color-white);
   display: block;
 }
 .stats-grid span { color: rgba(255,255,255,0.7); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
@@ -572,7 +582,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 .team-photo img { width: 100%; height: 280px; object-fit: cover; transition: var(--transition); }
 .team-card:hover .team-photo img { transform: scale(1.08); }
 .team-card h4 { color: var(--color-navy); margin-bottom: 4px; }
-.team-card span { color: var(--color-gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.team-card span { color: var(--color-teal); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
 
 /* ============ Contact ============ */
 .contact-wrap {
@@ -581,7 +591,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   gap: 60px;
 }
 .contact-info-card {
-  background: var(--color-navy);
+  background: var(--gradient-primary);
   color: var(--color-white);
   padding: 46px 40px;
   border-radius: 6px;
@@ -591,8 +601,8 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 .contact-item { display: flex; gap: 16px; margin-bottom: 26px; }
 .contact-item i {
   width: 44px; height: 44px;
-  background: rgba(201,162,75,0.15);
-  color: var(--color-gold);
+  background: rgba(255,255,255,0.14);
+  color: var(--color-white);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
@@ -608,7 +618,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   transition: var(--transition);
   font-size: 0.85rem;
 }
-.social-row a:hover { background: var(--color-gold); border-color: var(--color-gold); color: var(--color-navy); }
+.social-row a:hover { background: var(--color-white); border-color: var(--color-white); color: var(--color-navy); }
 
 .contact-form {
   background: var(--color-white);
@@ -634,7 +644,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--color-gold);
+  border-color: var(--color-teal);
   background: var(--color-white);
 }
 .form-group textarea { resize: vertical; min-height: 130px; }
@@ -664,7 +674,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   flex-direction: column;
   gap: 10px;
 }
-.map-embed i { font-size: 2rem; color: var(--color-gold); }
+.map-embed i { font-size: 2rem; color: var(--color-teal); }
 
 /* ============ Booking Page ============ */
 .booking-page-wrap {
@@ -679,7 +689,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
   box-shadow: var(--shadow-sm);
 }
 .booking-summary {
-  background: var(--color-navy);
+  background: var(--gradient-primary);
   color: var(--color-white);
   border-radius: 6px;
   padding: 40px 36px;
@@ -693,10 +703,10 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
 .summary-room h5 { font-size: 1rem; margin-bottom: 4px; }
 .summary-room span { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
 .summary-line { display: flex; justify-content: space-between; margin-bottom: 14px; font-size: 0.9rem; color: rgba(255,255,255,0.75); }
-.summary-total { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); font-size: 1.2rem; font-weight: 700; color: var(--color-gold); }
+.summary-total { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); font-size: 1.2rem; font-weight: 700; color: var(--color-white); }
 
 /* ============ Footer ============ */
-footer { background: #0b1621; color: rgba(255,255,255,0.65); padding: 80px 0 0; }
+footer { background: var(--gradient-primary); color: rgba(255,255,255,0.75); padding: 80px 0 0; }
 .footer-grid {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
@@ -709,7 +719,7 @@ footer { background: #0b1621; color: rgba(255,255,255,0.65); padding: 80px 0 0; 
 footer h5 { color: var(--color-white); font-size: 1rem; margin-bottom: 22px; font-family: var(--font-heading); }
 footer ul li { margin-bottom: 12px; }
 footer ul li a { font-size: 0.88rem; transition: var(--transition); }
-footer ul li a:hover { color: var(--color-gold); padding-left: 4px; }
+footer ul li a:hover { color: var(--color-white); padding-left: 4px; }
 .footer-social { display: flex; gap: 12px; margin-top: 8px; }
 .footer-social a {
   width: 36px; height: 36px;
@@ -719,14 +729,14 @@ footer ul li a:hover { color: var(--color-gold); padding-left: 4px; }
   font-size: 0.8rem;
   transition: var(--transition);
 }
-.footer-social a:hover { background: var(--color-gold); color: var(--color-navy); border-color: var(--color-gold); }
+.footer-social a:hover { background: var(--color-white); color: var(--color-navy); border-color: var(--color-white); }
 .footer-bottom {
   padding: 26px 0;
   display: flex;
   justify-content: space-between;
   font-size: 0.8rem;
 }
-.footer-bottom a:hover { color: var(--color-gold); }
+.footer-bottom a:hover { color: var(--color-white); }
 
 /* ============ Back to top ============ */
 .back-to-top {
@@ -735,8 +745,8 @@ footer ul li a:hover { color: var(--color-gold); padding-left: 4px; }
   right: 30px;
   width: 46px;
   height: 46px;
-  background: var(--color-gold);
-  color: var(--color-navy);
+  background: var(--gradient-primary);
+  color: var(--color-white);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -768,7 +778,7 @@ footer ul li a:hover { color: var(--color-gold); padding-left: 4px; }
 .room-badge {
   position: absolute;
   top: 14px; left: 14px;
-  background: rgba(16, 32, 47, 0.9);
+  background: var(--gradient-primary);
   color: var(--color-white);
   padding: 5px 12px;
   border-radius: 2px;
@@ -781,8 +791,9 @@ footer ul li a:hover { color: var(--color-gold); padding-left: 4px; }
 .availability-status {
   margin: 4px 0 22px;
   padding: 12px 16px;
-  background: #faf7f1;
-  border: 1px solid #f0ead9;
+  background: var(--color-cream);
+  border: 1px solid var(--color-cream-dark);
+  border-left: 3px solid var(--color-teal);
   border-radius: 4px;
   font-size: 0.88rem;
   color: var(--color-text-light);
@@ -811,7 +822,7 @@ footer ul li a:hover { color: var(--color-gold); padding-left: 4px; }
     position: fixed;
     top: 0; right: -100%;
     width: 78%; height: 100vh;
-    background: var(--color-navy);
+    background: var(--gradient-primary);
     flex-direction: column;
     justify-content: center;
     gap: 34px;

@@ -65,10 +65,10 @@ export default function About() {
           </div>
           <div className="amenity-grid" style={{ gridTemplateColumns: 'repeat(3,1fr)' }}>
             {values.map((v) => (
-              <div className="amenity-card" style={{ background: '#faf7f1', borderColor: '#f0ead9' }} key={v.id}>
-                <div className="amenity-icon" style={{ color: '#c9a24b' }}><i className={v.icon}></i></div>
-                <h4 style={{ color: '#10202f' }}>{v.title}</h4>
-                <p style={{ color: '#6b6b6b' }}>{v.text}</p>
+              <div className="amenity-card" style={{ background: '#f4f8fa', borderColor: '#e2edf1' }} key={v.id}>
+                <div className="amenity-icon" style={{ color: '#0E7490' }}><i className={v.icon}></i></div>
+                <h4 style={{ color: '#082F49' }}>{v.title}</h4>
+                <p style={{ color: '#5b6b76' }}>{v.text}</p>
               </div>
             ))}
           </div>

@@ -30,7 +30,7 @@ export default function EditContact({ contact, onSuccess, onCancel }: Props) {
   return (
     <form onSubmit={handleSubmit}>
       {error && <div className="admin-form-error">{error}</div>}
-      <p style={{ marginTop: 0, color: "#6b7280", fontSize: 13 }}>
+      <p style={{ marginTop: 0, color: "#5a7682", fontSize: 13 }}>
         <strong>{contact.name}</strong> ({contact.email}) — {contact.subject}
         <br />
         {contact.message}

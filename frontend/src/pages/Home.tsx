@@ -175,7 +175,7 @@ export default function Home() {
             </p>
           )}
           <div className="section-footer-cta">
-            <Link to="/rooms" className="btn btn-outline" style={{ color: '#10202f', borderColor: '#10202f' }}>
+            <Link to="/rooms" className="btn btn-outline" style={{ color: '#082F49', borderColor: '#082F49' }}>
               View All Rooms
             </Link>
           </div>
