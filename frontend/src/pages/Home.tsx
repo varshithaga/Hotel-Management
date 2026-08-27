@@ -1,15 +1,48 @@
-import { Link } from 'react-router-dom';
-import { rooms } from '../data/rooms';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { amenities } from '../data/amenities';
 import RoomCard from '../components/RoomCard';
 import TestimonialSlider from '../components/TestimonialSlider';
-import { useDemoForm } from '../hooks/useDemoForm';
 import { todayISODate } from '../utils/date';
+import { getRooms, getRoomTypes, toDisplayRoom, type PublicRoom, type RoomType } from '../api/public';
 
 export default function Home() {
-  const { formRef, handleSubmit } = useDemoForm();
+  const navigate = useNavigate();
   const minDate = todayISODate();
-  const featuredRooms = rooms.slice(0, 3);
+
+  const [rooms, setRooms] = useState<PublicRoom[]>([]);
+  const [roomTypes, setRoomTypes] = useState<RoomType[]>([]);
+  const [roomsError, setRoomsError] = useState(false);
+
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [guests, setGuests] = useState('2');
+  const [roomTypeId, setRoomTypeId] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    getRooms()
+      .then((data) => active && setRooms(data))
+      .catch(() => active && setRoomsError(true));
+    getRoomTypes()
+      .then((data) => active && setRoomTypes(data))
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const featuredRooms = useMemo(() => rooms.slice(0, 3), [rooms]);
+
+  const handleCheckAvailability = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (checkIn) params.set('check_in', checkIn);
+    if (checkOut) params.set('check_out', checkOut);
+    if (guests) params.set('guests', guests.replace(/\D/g, '') || '1');
+    if (roomTypeId) params.set('room_type_id', roomTypeId);
+    navigate(`/booking?${params.toString()}`);
+  };
 
   return (
     <>
@@ -34,31 +67,43 @@ export default function Home() {
 
       <div className="booking-strip">
         <div className="container">
-          <form className="booking-card" ref={formRef} onSubmit={handleSubmit}>
+          <form className="booking-card" onSubmit={handleCheckAvailability}>
             <div className="booking-field">
               <label>Check In</label>
-              <input type="date" min={minDate} required />
+              <input
+                type="date"
+                min={minDate}
+                required
+                value={checkIn}
+                onChange={(e) => setCheckIn(e.target.value)}
+              />
             </div>
             <div className="booking-field">
               <label>Check Out</label>
-              <input type="date" min={minDate} required />
+              <input
+                type="date"
+                min={checkIn || minDate}
+                required
+                value={checkOut}
+                onChange={(e) => setCheckOut(e.target.value)}
+              />
             </div>
             <div className="booking-field">
               <label>Guests</label>
-              <select>
-                <option>1 Guest</option>
-                <option>2 Guests</option>
-                <option>3 Guests</option>
-                <option>4+ Guests</option>
+              <select value={guests} onChange={(e) => setGuests(e.target.value)}>
+                <option value="1">1 Guest</option>
+                <option value="2">2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4+ Guests</option>
               </select>
             </div>
             <div className="booking-field">
               <label>Room Type</label>
-              <select>
-                <option>Deluxe Room</option>
-                <option>Executive Suite</option>
-                <option>Presidential Suite</option>
-                <option>Garden Villa</option>
+              <select value={roomTypeId} onChange={(e) => setRoomTypeId(e.target.value)}>
+                <option value="">Any Room Type</option>
+                {roomTypes.map((rt) => (
+                  <option value={rt.id} key={rt.id}>{rt.name}</option>
+                ))}
               </select>
             </div>
             <button type="submit" className="btn btn-primary">Check Availability</button>
@@ -118,11 +163,17 @@ export default function Home() {
             <h2>Our Featured Rooms &amp; Suites</h2>
             <p>Each room is thoughtfully designed to offer the ultimate blend of comfort, style, and tranquility.</p>
           </div>
-          <div className="rooms-grid">
-            {featuredRooms.map((room) => (
-              <RoomCard room={room} key={room.id} />
-            ))}
-          </div>
+          {featuredRooms.length > 0 ? (
+            <div className="rooms-grid">
+              {featuredRooms.map((room) => (
+                <RoomCard room={toDisplayRoom(room, room.is_it_reserved)} key={room.id} />
+              ))}
+            </div>
+          ) : (
+            <p className="section-status">
+              {roomsError ? 'Room information is unavailable right now.' : 'Loading featured rooms…'}
+            </p>
+          )}
           <div className="section-footer-cta">
             <Link to="/rooms" className="btn btn-outline" style={{ color: '#10202f', borderColor: '#10202f' }}>
               View All Rooms

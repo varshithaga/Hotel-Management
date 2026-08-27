@@ -11,6 +11,7 @@ from .routers import (
     contact,
     employee,
     floor,
+    public,
     reservation,
     room,
     user,
@@ -55,6 +56,7 @@ def read_root():
 
 app.include_router(auth.router, prefix="/api")
 app.include_router(auth.me_router, prefix="/api")
+app.include_router(public.router, prefix="/api")
 app.include_router(user.router, prefix="/api")
 app.include_router(floor.router, prefix="/api")
 app.include_router(room.room_type_router, prefix="/api")

@@ -6,6 +6,7 @@ from .room import (
     AmenityBase, AmenityCreate, AmenityUpdate, AmenityOut,
     RoomImageBase, RoomImageCreate, RoomImageUpdate, RoomImageOut,
     RoomBase, RoomCreate, RoomUpdate, RoomOut,
+    PublicRoomOut, AvailabilityOut,
 )
 from .reservation import ReservationBase, ReservationCreate, ReservationUpdate, ReservationOut
 from .booking import (

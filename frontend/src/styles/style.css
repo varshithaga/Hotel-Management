@@ -756,6 +756,42 @@ footer ul li a:hover { color: var(--color-gold); padding-left: 4px; }
 /* ============ Page banner small utilities ============ */
 .mb-0 { margin-bottom: 0 !important; }
 
+/* ============ API loading / status ============ */
+.section-status {
+  text-align: center;
+  color: var(--color-text-light);
+  font-size: 0.95rem;
+  padding: 30px 0;
+}
+.section-status-error { color: #b4232a; }
+
+.room-badge {
+  position: absolute;
+  top: 14px; left: 14px;
+  background: rgba(16, 32, 47, 0.9);
+  color: var(--color-white);
+  padding: 5px 12px;
+  border-radius: 2px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.availability-status {
+  margin: 4px 0 22px;
+  padding: 12px 16px;
+  background: #faf7f1;
+  border: 1px solid #f0ead9;
+  border-radius: 4px;
+  font-size: 0.88rem;
+  color: var(--color-text-light);
+}
+.availability-status p { margin: 0; }
+.availability-status .section-status-error { color: #b4232a; }
+
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
 /* ============ Responsive ============ */
 @media (max-width: 1024px) {
   .rooms-grid { grid-template-columns: repeat(2, 1fr); }

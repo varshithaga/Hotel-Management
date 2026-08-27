@@ -138,6 +138,31 @@ def query_rooms(db: Session, search: str | None = None):
     return query.order_by(models.Room.id.desc())
 
 
+def query_public_rooms(db: Session, room_type_id: int | None = None, min_capacity: int | None = None):
+    """Active rooms only, cheapest first — used by the guest website."""
+    query = db.query(models.Room).filter(models.Room.is_active.is_(True))
+    if room_type_id is not None:
+        query = query.filter(models.Room.room_type_id == room_type_id)
+    if min_capacity is not None:
+        query = query.filter(models.Room.capacity >= min_capacity)
+    return query.order_by(models.Room.price_per_night.asc())
+
+
+def reserved_room_ids(db: Session, check_in, check_out) -> set[int]:
+    """Room ids held by a non-canceled reservation overlapping [check_in, check_out)."""
+    rows = (
+        db.query(models.ReservationRoom.room_id)
+        .join(models.Reservation, models.Reservation.id == models.ReservationRoom.reservation_id)
+        .filter(
+            models.Reservation.is_it_canceled.is_(False),
+            models.Reservation.reserved_check_in_date < check_out,
+            models.Reservation.reserved_check_out_date > check_in,
+        )
+        .all()
+    )
+    return {row[0] for row in rows}
+
+
 def create_room(db: Session, room_in: schemas.RoomCreate):
     db_obj = models.Room(**room_in.model_dump())
     db.add(db_obj)

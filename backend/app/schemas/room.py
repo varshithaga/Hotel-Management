@@ -1,4 +1,5 @@
 # Pydantic schemas for: RoomType, Room, RoomImage, Amenity, RoomAmenity
+import datetime
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
@@ -97,3 +98,33 @@ class RoomOut(RoomBase):
     id: int
     images: list[RoomImageOut] = []
     amenities: list[AmenityOut] = []
+
+
+# --- Public (guest-facing, no auth) ---
+
+class PublicRoomOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    price_per_night: float
+    capacity: Optional[int] = None
+    no_of_beds: Optional[int] = None
+    description: Optional[str] = None
+    is_active: bool = True
+    is_it_reserved: bool = False
+    floor_id: int
+    room_type_id: int
+    room_type_name: Optional[str] = None
+    floor_name: Optional[str] = None
+    images: list[RoomImageOut] = []
+    amenities: list[AmenityOut] = []
+
+
+class AvailabilityOut(BaseModel):
+    check_in: datetime.date
+    check_out: datetime.date
+    nights: int
+    guests: Optional[int] = None
+    count: int
+    available_rooms: list[PublicRoomOut] = []

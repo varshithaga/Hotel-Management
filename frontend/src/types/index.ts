@@ -6,8 +6,10 @@ export interface Room {
   description: string;
   shortDescription?: string;
   guests: number;
-  size: number;
-  bed: string;
+  size?: number;
+  bed?: string;
+  roomType?: string;
+  soldOut?: boolean;
 }
 
 export interface Testimonial {

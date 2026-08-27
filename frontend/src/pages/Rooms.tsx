@@ -1,8 +1,30 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { rooms } from '../data/rooms';
 import RoomCard from '../components/RoomCard';
+import { getRooms, toDisplayRoom, type PublicRoom } from '../api/public';
 
 export default function Rooms() {
+  const [rooms, setRooms] = useState<PublicRoom[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    getRooms()
+      .then((data) => {
+        if (active) setRooms(data);
+      })
+      .catch(() => {
+        if (active) setError('We could not load rooms right now. Please try again shortly.');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <>
       <section className="page-hero">
@@ -20,11 +42,20 @@ export default function Rooms() {
             <h2>Choose From Our Signature Rooms</h2>
             <p>Every room is designed with meticulous attention to detail, blending comfort with sophisticated style.</p>
           </div>
-          <div className="rooms-grid">
-            {rooms.map((room) => (
-              <RoomCard room={room} showWifi key={room.id} />
-            ))}
-          </div>
+
+          {loading && <p className="section-status">Loading rooms&hellip;</p>}
+          {error && !loading && <p className="section-status section-status-error">{error}</p>}
+          {!loading && !error && rooms.length === 0 && (
+            <p className="section-status">No rooms are published yet. Please check back soon.</p>
+          )}
+
+          {!loading && !error && rooms.length > 0 && (
+            <div className="rooms-grid">
+              {rooms.map((room) => (
+                <RoomCard room={toDisplayRoom(room, room.is_it_reserved)} showWifi key={room.id} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

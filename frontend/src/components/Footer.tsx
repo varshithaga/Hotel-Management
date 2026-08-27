@@ -46,6 +46,9 @@ export default function Footer() {
         </div>
         <div className="footer-bottom">
           <span>&copy; 2026 Grandeur Hotel. All rights reserved.</span>
+          <span>
+            <Link to="/admin/login">Admin Login</Link>
+          </span>
           <span>Designed with &hearts; for unforgettable stays</span>
         </div>
       </div>
