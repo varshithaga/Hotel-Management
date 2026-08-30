@@ -91,6 +91,9 @@ export default function SignUp() {
         <p className="admin-login-alt">
           Already have an account? <Link to="/admin/login">Sign in</Link>
         </p>
+        <p className="admin-login-alt">
+          <Link to="/">&larr; Back to website</Link>
+        </p>
       </div>
     </div>
   );

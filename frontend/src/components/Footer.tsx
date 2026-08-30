@@ -31,8 +31,8 @@ export default function Footer() {
             <ul>
               <li><Link to="/booking">Book a Room</Link></li>
               <li><Link to="/contact">Contact Us</Link></li>
-              <li><a href="#">Spa &amp; Wellness</a></li>
-              <li><a href="#">Dining</a></li>
+              <li><Link to="/spa">Spa &amp; Wellness</Link></li>
+              <li><Link to="/dining">Dining</Link></li>
             </ul>
           </div>
           <div>

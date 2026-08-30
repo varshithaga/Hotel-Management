@@ -63,6 +63,9 @@ export default function Login() {
         <p className="admin-login-alt">
           Don&apos;t have an account? <Link to="/admin/signup">Sign up</Link>
         </p>
+        <p className="admin-login-alt">
+          <Link to="/">&larr; Back to website</Link>
+        </p>
       </div>
     </div>
   );

@@ -85,6 +85,15 @@ export default function AdminLayout() {
       <aside className="admin-sidebar">
         <div className="admin-sidebar-brand">Grandeur Admin</div>
         <nav className="admin-nav">
+          <div className="admin-nav-group">
+            <NavLink
+              to="/admin"
+              end
+              className={({ isActive }) => "admin-nav-link" + (isActive ? " active" : "")}
+            >
+              Dashboard
+            </NavLink>
+          </div>
           {navGroups.map((group) => (
             <div key={group.label} className="admin-nav-group">
               <div className="admin-nav-group-label">{group.label}</div>

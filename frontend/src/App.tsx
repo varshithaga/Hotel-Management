@@ -6,6 +6,8 @@ import About from './pages/About';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Booking from './pages/Booking';
+import Spa from './pages/Spa';
+import Dining from './pages/Dining';
 
 import ProtectedRoute from './Allpages/ProtectedRoute';
 import AdminLayout from './Allpages/AdminLayout';
@@ -40,6 +42,8 @@ export default function App() {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/booking" element={<Booking />} />
+          <Route path="/spa" element={<Spa />} />
+          <Route path="/dining" element={<Dining />} />
         </Route>
 
         <Route path="/admin/login" element={<Login />} />

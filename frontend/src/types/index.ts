@@ -40,3 +40,22 @@ export interface GalleryItem {
   label: string;
   size?: 'wide' | 'tall' | 'wide-tall';
 }
+
+export interface SpaTreatment {
+  id: string;
+  name: string;
+  duration: string;
+  price: number;
+  icon: string;
+  description: string;
+}
+
+export interface DiningVenue {
+  id: string;
+  name: string;
+  cuisine: string;
+  hours: string;
+  icon: string;
+  image: string;
+  description: string;
+}
