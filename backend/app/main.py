@@ -55,6 +55,7 @@ def read_root():
 
 
 app.include_router(auth.router, prefix="/api")
+app.include_router(auth.register_router, prefix="/api")
 app.include_router(auth.me_router, prefix="/api")
 app.include_router(public.router, prefix="/api")
 app.include_router(user.router, prefix="/api")

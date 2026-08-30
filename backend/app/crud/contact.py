@@ -22,7 +22,7 @@ def query_contacts(db: Session, search: str | None = None):
             | (models.ContactForm.email.ilike(like))
             | (models.ContactForm.subject.ilike(like))
         )
-    return query.order_by(models.ContactForm.id.desc())
+    return query.order_by(models.ContactForm.id.asc())
 
 
 def create_contact(db: Session, contact_in: schemas.ContactFormCreate):
@@ -67,7 +67,7 @@ def query_feedbacks(db: Session, search: str | None = None):
             | (models.Feedback.email.ilike(like))
             | (models.Feedback.subject.ilike(like))
         )
-    return query.order_by(models.Feedback.id.desc())
+    return query.order_by(models.Feedback.id.asc())
 
 
 def create_feedback(db: Session, feedback_in: schemas.FeedbackCreate):

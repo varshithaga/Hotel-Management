@@ -13,7 +13,7 @@ def query_floors(db: Session, search: str | None = None):
     query = db.query(models.Floor)
     if search:
         query = query.filter(models.Floor.name.ilike(f"%{search}%"))
-    return query.order_by(models.Floor.id.desc())
+    return query.order_by(models.Floor.id.asc())
 
 
 def create_floor(db: Session, floor_in: schemas.FloorCreate):

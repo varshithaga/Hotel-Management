@@ -4,9 +4,44 @@ from sqlalchemy.orm import Session
 from .. import models, schemas
 from ..auth import create_access_token, create_refresh_token, decode_token, get_current_user
 from ..database import get_db
-from ..security import verify_password
+from ..security import hash_password, verify_password
 
 router = APIRouter(prefix="/token", tags=["Auth"])
+
+register_router = APIRouter(prefix="/register", tags=["Auth"])
+
+
+@register_router.post("/", response_model=schemas.TokenPair, status_code=status.HTTP_201_CREATED)
+def register(payload: schemas.RegisterRequest, db: Session = Depends(get_db)):
+    existing = (
+        db.query(models.User)
+        .filter(
+            (models.User.username == payload.username)
+            | (models.User.email == payload.email)
+        )
+        .first()
+    )
+    if existing:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username or email already registered",
+        )
+    # Every registered account is an admin.
+    user = models.User(
+        username=payload.username,
+        email=payload.email,
+        full_name=payload.full_name,
+        role="admin",
+        hashed_password=hash_password(payload.password),
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return {
+        "access": create_access_token(user),
+        "refresh": create_refresh_token(user),
+        "user": user,
+    }
 
 
 @router.post("/", response_model=schemas.TokenPair)

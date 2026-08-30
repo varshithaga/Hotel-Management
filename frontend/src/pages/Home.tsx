@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { amenities } from '../data/amenities';
 import RoomCard from '../components/RoomCard';
 import TestimonialSlider from '../components/TestimonialSlider';
+import DatePicker from '../components/datepicker';
 import { todayISODate } from '../utils/date';
 import { getRooms, getRoomTypes, toDisplayRoom, type PublicRoom, type RoomType } from '../api/public';
 
@@ -70,22 +71,22 @@ export default function Home() {
           <form className="booking-card" onSubmit={handleCheckAvailability}>
             <div className="booking-field">
               <label>Check In</label>
-              <input
-                type="date"
+              <DatePicker
+                id="home-checkin"
                 min={minDate}
                 required
                 value={checkIn}
-                onChange={(e) => setCheckIn(e.target.value)}
+                onChange={setCheckIn}
               />
             </div>
             <div className="booking-field">
               <label>Check Out</label>
-              <input
-                type="date"
+              <DatePicker
+                id="home-checkout"
                 min={checkIn || minDate}
                 required
                 value={checkOut}
-                onChange={(e) => setCheckOut(e.target.value)}
+                onChange={setCheckOut}
               />
             </div>
             <div className="booking-field">

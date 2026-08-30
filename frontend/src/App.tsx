@@ -10,6 +10,7 @@ import Booking from './pages/Booking';
 import ProtectedRoute from './Allpages/ProtectedRoute';
 import AdminLayout from './Allpages/AdminLayout';
 import Login from './Allpages/Login';
+import SignUp from './Allpages/SignUp';
 import Dashboard from './Allpages/Dashboard';
 import FloorsPage from './Allpages/Floors';
 import RoomTypesPage from './Allpages/RoomTypes';
@@ -42,6 +43,7 @@ export default function App() {
         </Route>
 
         <Route path="/admin/login" element={<Login />} />
+        <Route path="/admin/signup" element={<SignUp />} />
 
         <Route
           path="/admin"

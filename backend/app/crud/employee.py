@@ -15,7 +15,7 @@ def query_departments(db: Session, search: str | None = None):
     query = db.query(models.Department)
     if search:
         query = query.filter(models.Department.name.ilike(f"%{search}%"))
-    return query.order_by(models.Department.id.desc())
+    return query.order_by(models.Department.id.asc())
 
 
 def create_department(db: Session, department_in: schemas.DepartmentCreate):
@@ -55,7 +55,7 @@ def query_staff_roles(db: Session, search: str | None = None):
     query = db.query(models.StaffRole)
     if search:
         query = query.filter(models.StaffRole.name.ilike(f"%{search}%"))
-    return query.order_by(models.StaffRole.id.desc())
+    return query.order_by(models.StaffRole.id.asc())
 
 
 def create_staff_role(db: Session, staff_role_in: schemas.StaffRoleCreate):
@@ -100,7 +100,7 @@ def query_employees(db: Session, search: str | None = None):
             | (models.Employee.email.ilike(like))
             | (models.Employee.phone.ilike(like))
         )
-    return query.order_by(models.Employee.id.desc())
+    return query.order_by(models.Employee.id.asc())
 
 
 def create_employee(db: Session, employee_in: schemas.EmployeeCreate):

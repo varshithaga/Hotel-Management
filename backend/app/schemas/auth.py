@@ -8,6 +8,13 @@ class TokenObtainRequest(BaseModel):
     password: str
 
 
+class RegisterRequest(BaseModel):
+    username: str
+    email: str
+    full_name: str
+    password: str
+
+
 class TokenPair(BaseModel):
     access: str
     refresh: str

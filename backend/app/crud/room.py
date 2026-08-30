@@ -15,7 +15,7 @@ def query_room_types(db: Session, search: str | None = None):
     query = db.query(models.RoomType)
     if search:
         query = query.filter(models.RoomType.name.ilike(f"%{search}%"))
-    return query.order_by(models.RoomType.id.desc())
+    return query.order_by(models.RoomType.id.asc())
 
 
 def create_room_type(db: Session, room_type_in: schemas.RoomTypeCreate):
@@ -55,7 +55,7 @@ def query_amenities(db: Session, search: str | None = None):
     query = db.query(models.Amenity)
     if search:
         query = query.filter(models.Amenity.name.ilike(f"%{search}%"))
-    return query.order_by(models.Amenity.id.desc())
+    return query.order_by(models.Amenity.id.asc())
 
 
 def create_amenity(db: Session, amenity_in: schemas.AmenityCreate):
@@ -95,7 +95,7 @@ def query_room_images(db: Session, room_id: int | None = None):
     query = db.query(models.RoomImage)
     if room_id is not None:
         query = query.filter(models.RoomImage.room_id == room_id)
-    return query.order_by(models.RoomImage.id.desc())
+    return query.order_by(models.RoomImage.id.asc())
 
 
 def create_room_image(db: Session, room_image_in: schemas.RoomImageCreate):
@@ -135,7 +135,7 @@ def query_rooms(db: Session, search: str | None = None):
     query = db.query(models.Room)
     if search:
         query = query.filter(models.Room.name.ilike(f"%{search}%"))
-    return query.order_by(models.Room.id.desc())
+    return query.order_by(models.Room.id.asc())
 
 
 def query_public_rooms(db: Session, room_type_id: int | None = None, min_capacity: int | None = None):

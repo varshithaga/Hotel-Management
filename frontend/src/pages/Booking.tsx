@@ -8,6 +8,7 @@ import {
   type PublicRoom,
   type Availability,
 } from '../api/public';
+import DatePicker from '../components/datepicker';
 
 const DEFAULT_NIGHTS = 3;
 const TAX_RATE = 0.1;
@@ -144,22 +145,22 @@ export default function Booking() {
                 <div className="form-row">
                   <div className="form-group">
                     <label>Check-In Date</label>
-                    <input
-                      type="date"
+                    <DatePicker
+                      id="booking-checkin"
                       min={minDate}
                       required
                       value={checkIn}
-                      onChange={(e) => setCheckIn(e.target.value)}
+                      onChange={setCheckIn}
                     />
                   </div>
                   <div className="form-group">
                     <label>Check-Out Date</label>
-                    <input
-                      type="date"
+                    <DatePicker
+                      id="booking-checkout"
                       min={checkIn || minDate}
                       required
                       value={checkOut}
-                      onChange={(e) => setCheckOut(e.target.value)}
+                      onChange={setCheckOut}
                     />
                   </div>
                 </div>

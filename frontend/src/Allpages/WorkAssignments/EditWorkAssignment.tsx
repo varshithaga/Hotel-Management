@@ -3,6 +3,7 @@ import { updateWorkAssignment, type WorkAssignment } from "./api";
 import { getWorkTypeList, type WorkType } from "../WorkTypes/api";
 import { getEmployeeList, type Employee } from "../Employees/api";
 import { getRoomList, type Room } from "../Rooms/api";
+import DateTimePicker from "../../components/datetimepicker";
 
 interface Props {
   assignment: WorkAssignment;
@@ -70,11 +71,11 @@ export default function EditWorkAssignment({ assignment, onSuccess, onCancel }: 
       </div>
       <div className="admin-form-field">
         <label htmlFor="edit-wa-start">Start Date</label>
-        <input id="edit-wa-start" type="datetime-local" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
+        <DateTimePicker id="edit-wa-start" value={startDate} onChange={setStartDate} required />
       </div>
       <div className="admin-form-field">
         <label htmlFor="edit-wa-end">End Date</label>
-        <input id="edit-wa-end" type="datetime-local" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+        <DateTimePicker id="edit-wa-end" value={endDate} onChange={setEndDate} />
       </div>
       <div className="admin-form-field">
         <label htmlFor="edit-wa-status">Status</label>

@@ -19,7 +19,7 @@ def query_users(db: Session, search: str | None = None):
             | (models.User.email.ilike(like))
             | (models.User.full_name.ilike(like))
         )
-    return query.order_by(models.User.id.desc())
+    return query.order_by(models.User.id.asc())
 
 
 def create_user(db: Session, user_in: schemas.UserCreate):

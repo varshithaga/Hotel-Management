@@ -20,7 +20,7 @@ def query_reservations(db: Session, search: str | None = None):
             | (models.Reservation.user_email.ilike(like))
             | (models.Reservation.user_phone.ilike(like))
         )
-    return query.order_by(models.Reservation.id.desc())
+    return query.order_by(models.Reservation.id.asc())
 
 
 def create_reservation(db: Session, reservation_in: schemas.ReservationCreate):

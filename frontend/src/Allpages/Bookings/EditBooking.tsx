@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { updateBooking, type AllBooking } from "./api";
 import { getRoomList, type Room } from "../Rooms/api";
+import DateTimePicker from "../../components/datetimepicker";
 
 interface Props {
   booking: AllBooking;
@@ -86,11 +87,11 @@ export default function EditBooking({ booking, onSuccess, onCancel }: Props) {
       </div>
       <div className="admin-form-field">
         <label htmlFor="edit-bk-checkin">Check-in</label>
-        <input id="edit-bk-checkin" type="datetime-local" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} required />
+        <DateTimePicker id="edit-bk-checkin" value={checkIn} onChange={setCheckIn} required />
       </div>
       <div className="admin-form-field">
         <label htmlFor="edit-bk-checkout">Check-out</label>
-        <input id="edit-bk-checkout" type="datetime-local" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} required />
+        <DateTimePicker id="edit-bk-checkout" value={checkOut} onChange={setCheckOut} required />
       </div>
       <div className="admin-form-field">
         <label htmlFor="edit-bk-days">No. of Days</label>

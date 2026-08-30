@@ -157,6 +157,35 @@ const login = async (username: string, password: string): Promise<CurrentUser> =
   return loginData.user;
 };
 
+interface RegisterPayload {
+  username: string;
+  email: string;
+  full_name: string;
+  password: string;
+}
+
+const register = async (payload: RegisterPayload): Promise<CurrentUser> => {
+  const response = await fetch(createApiUrl('api/register/'), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.detail || data.message || 'Registration failed');
+  }
+
+  const loginData = data as LoginResponse;
+  localStorage.setItem('access', loginData.access);
+  localStorage.setItem('refresh', loginData.refresh);
+  localStorage.setItem('user', JSON.stringify(loginData.user));
+  return loginData.user;
+};
+
 const logout = (): void => {
   localStorage.removeItem('access');
   localStorage.removeItem('refresh');
@@ -177,5 +206,5 @@ const getCurrentUser = (): CurrentUser | null => {
   }
 };
 
-export { createApiUrl, getAuthHeaders, getAuthHeadersFile, login, logout, isLoggedIn, getCurrentUser };
-export type { AuthHeaders, FileUploadHeaders, JwtPayload, RefreshTokenResponse, CurrentUser, LoginResponse };
+export { createApiUrl, getAuthHeaders, getAuthHeadersFile, login, register, logout, isLoggedIn, getCurrentUser };
+export type { AuthHeaders, FileUploadHeaders, JwtPayload, RefreshTokenResponse, CurrentUser, LoginResponse, RegisterPayload };

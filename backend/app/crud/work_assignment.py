@@ -15,7 +15,7 @@ def query_work_types(db: Session, search: str | None = None):
     query = db.query(models.WorkType)
     if search:
         query = query.filter(models.WorkType.name.ilike(f"%{search}%"))
-    return query.order_by(models.WorkType.id.desc())
+    return query.order_by(models.WorkType.id.asc())
 
 
 def create_work_type(db: Session, work_type_in: schemas.WorkTypeCreate):
@@ -55,7 +55,7 @@ def query_work_assignments(db: Session, search: str | None = None):
     query = db.query(models.WorkAssignment)
     if search:
         query = query.filter(models.WorkAssignment.status.ilike(f"%{search}%"))
-    return query.order_by(models.WorkAssignment.id.desc())
+    return query.order_by(models.WorkAssignment.id.asc())
 
 
 def create_work_assignment(db: Session, assignment_in: schemas.WorkAssignmentCreate):
@@ -161,7 +161,7 @@ def query_work_assignment_logs(db: Session, assignment_id: int | None = None, se
         query = query.filter(models.WorkAssignmentLog.assignment_id == assignment_id)
     if search:
         query = query.filter(models.WorkAssignmentLog.action.ilike(f"%{search}%"))
-    return query.order_by(models.WorkAssignmentLog.id.desc())
+    return query.order_by(models.WorkAssignmentLog.id.asc())
 
 
 def create_work_assignment_log(db: Session, log_in: schemas.WorkAssignmentLogCreate):

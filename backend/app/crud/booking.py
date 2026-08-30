@@ -22,7 +22,7 @@ def query_bookings(db: Session, search: str | None = None):
             | (models.AllBooking.user_email.ilike(like))
             | (models.AllBooking.user_phone.ilike(like))
         )
-    return query.order_by(models.AllBooking.id.desc())
+    return query.order_by(models.AllBooking.id.asc())
 
 
 def create_booking(db: Session, booking_in: schemas.AllBookingCreate):
@@ -64,7 +64,7 @@ def query_payments(db: Session, booking_id: int | None = None, search: str | Non
         query = query.filter(models.Payment.booking_id == booking_id)
     if search:
         query = query.filter(models.Payment.transaction_ref.ilike(f"%{search}%"))
-    return query.order_by(models.Payment.id.desc())
+    return query.order_by(models.Payment.id.asc())
 
 
 def create_payment(db: Session, payment_in: schemas.PaymentCreate):
@@ -104,7 +104,7 @@ def query_reviews(db: Session, search: str | None = None):
     query = db.query(models.Review)
     if search:
         query = query.filter(models.Review.comment.ilike(f"%{search}%"))
-    return query.order_by(models.Review.id.desc())
+    return query.order_by(models.Review.id.asc())
 
 
 def create_review(db: Session, review_in: schemas.ReviewCreate):
