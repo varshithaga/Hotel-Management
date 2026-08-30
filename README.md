@@ -9,6 +9,26 @@ A full-stack hotel management application:
 
 ---
 
+## Walkthrough
+
+An animated tour of the whole app — a 15-scene loop covering every public page
+(Home, Rooms, Booking, Spa, Dining, Gallery, About, Contact) and the admin side
+(sign-in, dashboard, and the Reservations / Bookings / Payments / Employees /
+Work Assignments tables), using the same layout, navigation and seed data as the
+running application.
+
+![Grandeur Hotel walkthrough](docs/demo.svg)
+
+_Animated SVG — plays automatically on GitHub; open [`docs/demo.svg`](docs/demo.svg)
+directly if your viewer doesn't animate it. Regenerate with
+`python docs/gen_demo.py` (stdlib only) after changing the seed data._
+
+> Prefer a real screen recording? Start both servers (below), capture the browser
+> with your OS recorder (Windows: **Win + Alt + R**), and drop the file in `docs/`,
+> updating the link above.
+
+---
+
 ## Tech stack
 
 | Layer     | Technology |
