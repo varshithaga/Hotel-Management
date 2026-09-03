@@ -11,21 +11,25 @@ A full-stack hotel management application:
 
 ## Walkthrough
 
-An animated tour of the whole app — a 15-scene loop covering every public page
-(Home, Rooms, Booking, Spa, Dining, Gallery, About, Contact) and the admin side
-(sign-in, dashboard, and the Reservations / Bookings / Payments / Employees /
-Work Assignments tables), using the same layout, navigation and seed data as the
-running application.
+A full tour of the running application — every public page (Home, Rooms, Booking,
+Spa, Dining, Gallery, About, Contact) and every admin screen (sign-in, dashboard,
+and all 16 management tables), captured from the live app with seeded data.
+
+| Format | File | Notes |
+|--------|------|-------|
+| **Video** | [`docs/walkthrough.mp4`](docs/walkthrough.mp4) | 1080p H.264, ~75 s — upload / share anywhere |
+| **Slideshow** | [`docs/walkthrough.html`](docs/walkthrough.html) | open in a browser — autoplay, arrow-key navigation |
+| **Screenshots** | [`docs/screenshots/`](docs/screenshots/) | 26 full-page images, one per screen |
+| **Animated SVG** | [`docs/demo.svg`](docs/demo.svg) | lightweight, plays inline on GitHub |
 
 ![Grandeur Hotel walkthrough](docs/demo.svg)
 
-_Animated SVG — plays automatically on GitHub; open [`docs/demo.svg`](docs/demo.svg)
-directly if your viewer doesn't animate it. Regenerate with
-`python docs/gen_demo.py` (stdlib only) after changing the seed data._
+### Regenerating
 
-> Prefer a real screen recording? Start both servers (below), capture the browser
-> with your OS recorder (Windows: **Win + Alt + R**), and drop the file in `docs/`,
-> updating the link above.
+- **Screenshots + video + slideshow** — start both servers and seed the database
+  (see below), then from `docs/` run `python capture.py` (needs Node.js; installs
+  `puppeteer-core` + `ffmpeg-static` on first run).
+- **Animated SVG** — `python docs/gen_demo.py` (stdlib only) after changing seed data.
 
 ---
 

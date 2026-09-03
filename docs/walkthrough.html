@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Grandeur Hotel — Walkthrough</title>
+<style>
+  :root { --teal:#0E7490; --navy:#082F49; --gold:#c9a24b; --bg:#0b1e2b; --panel:#0f2a3a; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: radial-gradient(circle at 50% 0%, #123449, var(--bg));
+    color: #e8f1f5; font-family: "Segoe UI", system-ui, sans-serif;
+    display: flex; flex-direction: column; min-height: 100vh;
+  }
+  header {
+    padding: 14px 22px; display: flex; align-items: center; gap: 14px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  header h1 { font-family: Georgia, "Times New Roman", serif; font-size: 18px; margin: 0; font-weight: 600; }
+  header h1 span { color: var(--gold); }
+  .count { margin-left: auto; font-size: 13px; color: #9fbecd; font-variant-numeric: tabular-nums; }
+  main {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    padding: 22px; position: relative; overflow: hidden;
+  }
+  figure {
+    margin: 0; width: min(1200px, 100%); background: var(--panel);
+    border: 1px solid rgba(255,255,255,.1); border-radius: 12px; overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,.45);
+  }
+  .frame { max-height: 68vh; overflow: auto; background: #06141d; }
+  .frame img { display: block; width: 100%; }
+  figcaption {
+    padding: 12px 18px; display: flex; align-items: baseline; gap: 12px;
+    border-top: 1px solid rgba(255,255,255,.08); background: linear-gradient(var(--navy), #06202e);
+  }
+  figcaption b { font-size: 15px; }
+  figcaption span { font-size: 13px; color: #9fbecd; }
+  .nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    border: none; background: rgba(9,30,42,.7); color: #fff; font-size: 22px;
+    width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav:hover { background: var(--teal); }
+  .nav.prev { left: 26px; } .nav.next { right: 26px; }
+  footer {
+    padding: 12px 22px; display: flex; align-items: center; gap: 14px;
+    border-top: 1px solid rgba(255,255,255,.08); font-size: 13px;
+  }
+  button.ctl {
+    border: 1px solid rgba(255,255,255,.2); background: transparent; color: #e8f1f5;
+    padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  button.ctl:hover { border-color: var(--teal); background: rgba(14,116,144,.25); }
+  .bar { flex: 1; height: 4px; background: rgba(255,255,255,.12); border-radius: 2px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .25s; }
+  .hint { color: #7fa2b3; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Grandeur <span>Hotel</span> — full application walkthrough</h1>
+  <div class="count"><span id="idx">1</span> / <span id="total">26</span></div>
+</header>
+
+<main>
+  <button class="nav prev" id="prev" aria-label="Previous">&#8249;</button>
+  <figure>
+    <div class="frame"><img id="shot" alt="" /></div>
+    <figcaption><b id="title"></b><span id="sub"></span></figcaption>
+  </figure>
+  <button class="nav next" id="next" aria-label="Next">&#8250;</button>
+</main>
+
+<footer>
+  <button class="ctl" id="play">Pause</button>
+  <div class="bar"><i id="fill"></i></div>
+  <span class="hint">&#8592; &#8594; arrows to navigate &nbsp;&middot;&nbsp; Space to play/pause</span>
+</footer>
+
+<script>
+const SLIDES = [
+  ["01-home", "Home", "Public site — hero, availability search, featured rooms"],
+  ["02-rooms", "Rooms & Suites", "Live room list from the API with pricing and amenities"],
+  ["03-booking", "Booking", "Availability check and reservation request"],
+  ["04-spa", "Spa & Wellness", "Treatments and packages"],
+  ["05-dining", "Dining", "Restaurants and menus"],
+  ["06-gallery", "Gallery", "Property photo gallery"],
+  ["07-about", "About", "Hotel story and highlights"],
+  ["08-contact", "Contact", "Enquiry form feeding the admin Contact Forms table"],
+  ["09-admin-login", "Admin — Sign in", "JWT login at /admin/login (admin / admin123)"],
+  ["10-admin-dashboard", "Admin — Dashboard", "Section launcher for every management area"],
+  ["11-admin-floors", "Floors", "Building floors & wings"],
+  ["12-admin-room-types", "Room Types", "Categories and descriptions"],
+  ["13-admin-amenities", "Amenities", "In-room facilities"],
+  ["14-admin-rooms", "Rooms", "Inventory, pricing, status"],
+  ["15-admin-reservations", "Reservations", "Upcoming guest holds"],
+  ["16-admin-bookings", "Bookings", "Confirmed stays"],
+  ["17-admin-payments", "Payments", "Transactions and status"],
+  ["18-admin-reviews", "Reviews", "Guest ratings"],
+  ["19-admin-contacts", "Contact Forms", "Enquiries from the public site"],
+  ["20-admin-feedbacks", "Feedbacks", "Guest suggestions"],
+  ["21-admin-departments", "Departments", "Operational teams"],
+  ["22-admin-staff-roles", "Staff Roles", "Job titles"],
+  ["23-admin-employees", "Employees", "Team directory"],
+  ["24-admin-work-types", "Work Types", "Maintenance categories"],
+  ["25-admin-work-assignments", "Work Assignments", "Scheduled jobs"],
+  ["26-admin-users", "Users", "Admin & staff accounts"],
+];
+const DWELL = 2800;
+let i = 0, playing = true, timer = null, t0 = 0, raf = null;
+
+const $ = (id) => document.getElementById(id);
+$("total").textContent = SLIDES.length;
+
+function render() {
+  const [file, title, sub] = SLIDES[i];
+  $("shot").src = "screenshots/" + file + ".jpg";
+  $("shot").alt = title;
+  $("title").textContent = title;
+  $("sub").textContent = sub;
+  $("idx").textContent = i + 1;
+  $("frame") && ($("frame").scrollTop = 0);
+  document.querySelector(".frame").scrollTop = 0;
+}
+function go(n) { i = (n + SLIDES.length) % SLIDES.length; render(); restart(); }
+function tick() {
+  if (!playing) return;
+  const p = Math.min(1, (performance.now() - t0) / DWELL);
+  $("fill").style.width = (p * 100) + "%";
+  if (p >= 1) { go(i + 1); return; }
+  raf = requestAnimationFrame(tick);
+}
+function restart() {
+  cancelAnimationFrame(raf);
+  t0 = performance.now();
+  $("fill").style.width = "0%";
+  if (playing) raf = requestAnimationFrame(tick);
+}
+function setPlay(v) {
+  playing = v;
+  $("play").textContent = v ? "Pause" : "Play";
+  restart();
+}
+
+$("prev").onclick = () => go(i - 1);
+$("next").onclick = () => go(i + 1);
+$("play").onclick = () => setPlay(!playing);
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft") go(i - 1);
+  else if (e.key === "ArrowRight") go(i + 1);
+  else if (e.key === " ") { e.preventDefault(); setPlay(!playing); }
+});
+
+render();
+restart();
+</script>
+</body>
+</html>
